@@ -25,40 +25,51 @@ html, body {
     position: relative;
   }
   
-  /* Screen Area */
   .screen {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     position: relative;
-    padding: 20px; /* Inner spacing */
+    padding: 20px;
     
-    /* Scanlines effect */
     background: linear-gradient(to top, #000, #000, #333, #333);
     background-size: 100% 1px;
     
-    /* Retro styling */
-    color: #00ff00;
+    color: #888;
     font-family: "Courier New", monospace;
     font-size: 50px;
-    text-shadow: 0 0 10px #00ff00;
+    text-shadow: 0 0 10px #888;
     
-    /* Transition and flicker effect */
     transition: opacity 0.5s ease-out;
     animation: flicker 2s infinite;
   }
+
+  .top {
+    position: absolute;
+    background: #aaa;
+    background-size: 100% 1px;
+    width: 100%;
+    height: 3%;
+    top: 0px;
+    left: 0px;
+    padding: 5px;
+
+    color:#000;
+    font-family: "Courier New", monospace;
+    font-size: 20px;
+    font-weight: normal;
+    text-shadow: #444;
+  }
   
-  /* Navigation area positioned in the top left */
   .nav {
     position: absolute;
-    top: 20px;
+    top: 40px;
     left: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
   }
   
-  /* Folder and File Containers */
   .folder, .file {
     cursor: pointer;
   }
@@ -79,16 +90,14 @@ html, body {
     filter: grayscale(100%) brightness(0.8);
   }
   
-  /* Labels displayed below icons */
   .folder .label, .file .label {
     margin-top: 8px;
     font-size: 16px;
-    color: #00ff00;
-    text-shadow: 0 0 5px #00ff00;
+    color: #ffffff;
+    text-shadow: 0 0 5px #888888;
     font-family: "Courier New", monospace;
   }
   
-  /* Flicker Animation Keyframes for the screen */
   @keyframes flicker {
     0% { opacity: 0.95; }
     5% { opacity: 0.9; }
@@ -97,10 +106,9 @@ html, body {
     20% { opacity: 0.95; }
     25% { opacity: 0.9; }
     30% { opacity: 0.95; }
-    100% { opacity: 0.98; }
+    100% { opacity: 0.9; }
   }
   
-  /* Responsive Adjustments */
   @media screen and (max-width: 768px) {
     .monitor {
       width: 95%;
