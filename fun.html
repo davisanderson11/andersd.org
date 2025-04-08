@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Davis Anderson</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="monitor">
+    <div class="screen">
+      <!-- Canvas fills screen behind everything -->
+      <canvas id="canvas"></canvas>
+
+      <!-- Scanlines overlay on top of the canvas -->
+      <div class="scanlines"></div>
+
+      <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // To get a blocky, pixelated look we render to a lower resolution
+        // and then scale the canvas up. Adjust scaleFactor to change the block size.
+        const scaleFactor = 8; 
+
+        // Dot (now digit) parameters in internal canvas coordinates
+        let spacing = 10;  // Grid spacing (in lower-res canvas pixels)
+        const baseRadius = 4;  // Base "influence" used to scale text size
+        const maxRadius = 6;  // Maximum text size modifier when mouse is super close
+        const maxAdd = maxRadius - baseRadius;
+        const k = 1000;       // Constant for inverse-square effect
+        const easeFactor = 5;  // Exponential easing constant
+        const maxShake = 0.5;  // Maximum shake offset (in low-res pixels)
+        const shakeFrequency = 40; // Frequency of oscillation
+
+        // Array to hold grid cell data: x, y and a random digit (0-9)
+        let dots = [];
+
+        // Create grid of digits on the low-res canvas
+        function createDots() {
+          dots = [];
+          for (let x = spacing / 2; x < canvas.width; x += spacing) {
+            for (let y = spacing / 2; y < canvas.height; y += spacing) {
+              // Store a static random digit for this grid cell.
+              const digit = Math.floor(Math.random() * 10);
+              dots.push({ x, y, digit });
+            }
+          }
+        }
+
+        // Resize canvas based on the .screen container size,
+        // but set the internal drawing resolution low for pixelation.
+        function resizeCanvas() {
+          const screenElem = document.querySelector(".screen");
+          const displayWidth = screenElem.clientWidth;
+          const displayHeight = screenElem.clientHeight;
+
+          // Set CSS size to fill the screen container
+          canvas.style.position = "absolute";
+          canvas.style.top = "0";
+          canvas.style.left = "0";
+          canvas.style.width = displayWidth + "px";
+          canvas.style.height = displayHeight + "px";
+
+          // Set low-resolution internal size
+          canvas.width = Math.floor(displayWidth / scaleFactor);
+          canvas.height = Math.floor(displayHeight / scaleFactor);
+
+          createDots();
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Track mouse position in internal canvas coordinates
+        let mouse = { x: -9999, y: -9999 };
+        canvas.addEventListener("mousemove", e => {
+          const rect = canvas.getBoundingClientRect();
+          // Convert client (CSS) pixels to internal canvas coordinates
+          const cssPixelX = e.clientX - rect.left;
+          const cssPixelY = e.clientY - rect.top;
+          mouse.x = cssPixelX * (canvas.width / rect.width);
+          mouse.y = cssPixelY * (canvas.height / rect.height);
+        });
+        canvas.addEventListener("mouseleave", () => {
+          mouse.x = -9999;
+          mouse.y = -9999;
+        });
+
+        // Animation loop renders each digit with a dynamic size, shade, and shake effect.
+        function animate() {
+          // Clear background
+          ctx.fillStyle = "black";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          const currentTime = Date.now() / 1000;
+
+          dots.forEach(dot => {
+            // Compute distance between the grid point and the mouse
+            const dx = dot.x - mouse.x;
+            const dy = dot.y - mouse.y;
+            const distSq = dx * dx + dy * dy;
+            // Inverse square influence for size effect
+            const raw = k / (distSq + 1);
+            const easedEffect = maxAdd * (1 - Math.exp(-raw / easeFactor));
+            const radius = baseRadius + Math.min(easedEffect, maxAdd);
+
+            // Interpolation value for the shade (0 when at baseRadius, 1 when at maxRadius)
+            const t = (radius - baseRadius) / (maxRadius - baseRadius);
+            const gray = Math.floor(128 + t * (255 - 128));
+            const color = `rgb(${gray}, ${gray}, ${gray})`;
+
+            // Compute shake offsets
+            const shakeAmplitude = maxShake * t;
+            const offsetX = Math.sin(currentTime * shakeFrequency + dot.x) * shakeAmplitude;
+            const offsetY = Math.cos(currentTime * shakeFrequency + dot.y) * shakeAmplitude;
+
+            ctx.fillStyle = color;
+            // Set the font size based on the computed radius. Multiply to reach a good size.
+            ctx.font = `${radius * 2}px monospace`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(dot.digit, dot.x + offsetX, dot.y + offsetY);
+          });
+
+          requestAnimationFrame(animate);
+        }
+        animate();
+      </script>
+
+      <!-- Top Bar -->
+      <div class="top">
+        <span class="label">andersd.org</span>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="bottom">
+        <div class="icon" id="test">
+          <img src="images/power.png" alt="Test" />
+        </div>
+      </div>
+
+      <!-- Navigation icons -->
+    </div>
+  </div>
+</body>
+</html>

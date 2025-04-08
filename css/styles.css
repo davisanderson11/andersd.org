@@ -1,141 +1,175 @@
 /* Reset and base styling */
 html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* Center the CRT monitor on the page */
-  body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #111; /* Dark background for contrast */
-  }
-  
-  /* CRT Monitor Frame */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Dark background, center the CRT monitor */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+}
+
+/* CRT Monitor Frame */
+.monitor {
+  /* Adjust size as needed */
+  width: 90%;
+  height: 90vh;
+  background: #222;
+  border: 10px solid #333;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Main screen area */
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  /* Removed padding so the canvas fills the screen completely */
+  padding: 0;
+
+  background: linear-gradient(to top, #000, #000, #333, #333);
+  background-size: 100% 1px;
+
+  color: #888;
+  font-family: "Courier New", monospace;
+  font-size: 50px;
+  text-shadow: 0 0 10px #888;
+  transition: opacity 0.5s ease-out;
+  animation: flicker 2s infinite;
+}
+
+/* The canvas is scaled for a true pixelated look */
+#canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Scanlines overlay on top of the canvas */
+.scanlines {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.2) 2px,
+    rgba(0, 0, 0, 0.2) 4px
+  );
+  image-rendering: pixelated;
+}
+
+/* Top bar styling */
+.top {
+  position: absolute;
+  background: #aaa;
+  background-size: 100% 1px;
+  width: 100%;
+  height: 3%;
+  top: 0;
+  left: 0;
+  padding: 5px;
+  z-index: 3;
+  color: #000;
+  font-family: "Courier New", monospace;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+/* Bottom bar styling */
+.bottom {
+  position: absolute;
+  background: #aaa;
+  background-size: 100% 1px;
+  width: 100%;
+  height: 6%;
+  bottom: 0;
+  left: 0;
+  padding: 5px;
+  z-index: 3;
+  color: #000;
+  font-family: "Courier New", monospace;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+/* Navigation styling */
+.nav {
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  z-index: 4;
+}
+
+.folder, .file, .icon {
+  cursor: pointer;
+}
+
+/* Vertical stacking for link items */
+.folder a, .file a, .icon a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Folder and file icons */
+.folder img, .file img {
+  width: 64px;
+  height: 64px;
+  filter: grayscale(100%) brightness(0.8);
+}
+
+/* Icon image styling */
+.icon img {
+  width: 40px;
+  height: 40px;
+  filter: grayscale(100%) brightness(0.15);
+}
+
+.folder .label, .file .label {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #ffffff;
+  text-shadow: 0 0 5px #888888;
+  font-family: "Courier New", monospace;
+}
+
+/* CRT flicker animation */
+@keyframes flicker {
+  0%   { opacity: 0.95; }
+  5%   { opacity: 0.9; }
+  10%  { opacity: 0.95; }
+  15%  { opacity: 1; }
+  20%  { opacity: 0.95; }
+  25%  { opacity: 0.9; }
+  30%  { opacity: 0.95; }
+  100% { opacity: 0.9; }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
   .monitor {
-    width: 80%;
-    height: 80vh;
-    background: #222;
-    border: 10px solid #333;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-    overflow: hidden;
-    position: relative;
+    width: 95%;
+    height: 70vh;
   }
-  
-  .screen {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    position: relative;
-    padding: 20px;
-    
-    background: linear-gradient(to top, #000, #000, #333, #333);
-    background-size: 100% 1px;
-    
-    color: #888;
-    font-family: "Courier New", monospace;
-    font-size: 50px;
-    text-shadow: 0 0 10px #888;
-    
-    transition: opacity 0.5s ease-out;
-    animation: flicker 2s infinite;
-  }
-
-  .top {
-    position: absolute;
-    background: #aaa;
-    background-size: 100% 1px;
-    width: 100%;
-    height: 3%;
-    top: 0px;
-    left: 0px;
-    padding: 5px;
-
-    color:#000;
-    font-family: "Courier New", monospace;
-    font-size: 20px;
-    font-weight: normal;
-    text-shadow: #444;
-  }
-
-  .bottom {
-    position: absolute;
-    background: #aaa;
-    background-size: 100% 1px;
-    width: 100%;
-    height: 6%;
-    bottom: 0px;
-    left: 0px;
-    padding: 5px;
-
-    color:#000;
-    font-family: "Courier New", monospace;
-    font-size: 20px;
-    font-weight: normal;
-    text-shadow: #444;
-  }
-  
-  .nav {
-    position: absolute;
-    top: 40px;
-    left: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .folder, .file, .icon {
-    cursor: pointer;
-  }
-  
-  /* Style links as column flex containers so the icon is above the label */
-  .folder a, .file a, .icon a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  /* Folder and File Icon Images with grayscale and uniform gray tone */
-  .folder img, .file img {
-    width: 64px;
-    height: 64px;
-    filter: grayscale(100%) brightness(0.8);
-  }
-
-  .icon img {
-    width: 40px;
-    height: 40px;
-    filter: grayscale(100%) brightness(0.15);
-  }
-  
-  .folder .label, .file .label {
-    margin-top: 8px;
-    font-size: 16px;
-    color: #ffffff;
-    text-shadow: 0 0 5px #888888;
-    font-family: "Courier New", monospace;
-  }
-  
-  @keyframes flicker {
-    0% { opacity: 0.95; }
-    5% { opacity: 0.9; }
-    10% { opacity: 0.95; }
-    15% { opacity: 1; }
-    20% { opacity: 0.95; }
-    25% { opacity: 0.9; }
-    30% { opacity: 0.95; }
-    100% { opacity: 0.9; }
-  }
-  
-  @media screen and (max-width: 768px) {
-    .monitor {
-      width: 95%;
-      height: 70vh;
-    }
-  }
-  
+}
