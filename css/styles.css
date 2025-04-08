@@ -119,12 +119,12 @@ body {
   z-index: 4;
 }
 
-.folder, .file, .icon {
+.folder, .file, .icon, .exe {
   cursor: pointer;
 }
 
 /* Vertical stacking for link items */
-.folder a, .file a, .icon a {
+.folder a, .file a, .icon a, .exe a {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -133,10 +133,11 @@ body {
 }
 
 /* Folder and file icons */
-.folder img, .file img {
+.folder img, .file img, .exe img {
   width: 64px;
   height: 64px;
   filter: grayscale(100%) brightness(0.8);
+  image-rendering: pixelated;
 }
 
 /* Icon image styling */
@@ -146,7 +147,7 @@ body {
   filter: grayscale(100%) brightness(0.15);
 }
 
-.folder .label, .file .label {
+.folder .label, .file .label, .exe .label {
   margin-top: 8px;
   font-size: 16px;
   color: #ffffff;
